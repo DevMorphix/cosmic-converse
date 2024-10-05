@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from eyes.nasa.gov/apps/asteroids/ by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 05 Oct 2024 09:51:57 GMT -->
+<head>
+	<meta charset="UTF-8" />
+	<title>Eyes on Asteroids - NASA/JPL</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+	<meta name="description"
+		content="Explore the 3D world of Asteroids, Comets and NEOs. Learn about past and future missions, tracking and predicting orbits, and close approaches to Earth." />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Eyes on Asteroids - NASA/JPL" />
+	<meta property="og:description"
+		content="Explore the 3D world of Asteroids, Comets and NEOs. Learn about past and future missions, tracking and predicting orbits, and close approaches to Earth." />
+	<meta property="og:title" content="Eyes on Asteroids - NASA/JPL" />
+	<meta property="og:url" content="https://eyes.nasa.gov/apps/asteroids" />
+	<meta property="og:image" content="og_img.jpg" />
+	<meta name="robots" content="noarchive" />
+	<link rel="canonical" href="https://eyes.nasa.gov/apps/asteroids" />
+	<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+	<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+	<link rel="preload" as="image" href="assets/images/splash_bennu.png">
+	<link rel="preload" as="font" type="font/woff" href="assets/default/fonts/Metropolis-Light.woff" crossorigin>
+	<link rel="preload" as="font" type="font/woff" href="assets/default/fonts/Metropolis-SemiBold.woff" crossorigin>
+ 	<link rel="icon" type="image/png" sizes="194x194" href="favicon-194x194.png" />
+	<link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png" />
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+	<link rel="manifest" href="site.webmanifest" />
+	<link rel="mask-icon" href="safari-pinned-tab.svg" color="#2b5797" />
+	<link rel="shortcut icon" href="favicon.ico" />
+	<meta name="msapplication-TileColor" content="#2b5797" />
+	<meta name="msapplication-config" content="browserconfig.xml" />
+	<meta name="theme-color" content="#000000" />
+	<style>
+		html,
+		body {
+			margin: 0;
+			padding: 0;
+			background: black;
+		}
+
+		#loading-screen {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			background: black;
+			pointer-events: none;
+			z-index: 9999;
+		}
+
+		#loading-screen-wrapper {
+			animation: fadeInDelayed 0.8s linear;
+		}
+
+		#loading-screen-container {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translateX(-50%) translateY(-50%);
+			text-align: center;
+		}
+
+		#loading-screen-logo {
+			position: absolute;
+			left: 50%;
+			top: 15%;
+			transform: translateX(-50%) translateY(-50%);
+			width: 110px;
+			height: 110px;
+			opacity: 0.7;
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-image: url(assets/default/svg/nasa_logo.svg);
+		}
+
+		#loading-screen-text {
+			text-transform: uppercase;
+			font-size: 22px;
+			letter-spacing: 5px;
+			font-weight: 200;
+		}
+
+		#loading-screen-bar {
+			width: 200px;
+			max-width: 85vw;
+			margin-top: 20px;
+			height: 4px;
+			border-radius: 4px;
+			background: rgba(255, 255, 255, 0.5);
+			overflow: hidden;
+		}
+
+		#loading-screen-bar::after {
+			content: "";
+			display: block;
+			height: 4px;
+			background: #fff;
+			animation: load 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+		}
+
+		#loading-screen-stars1 {
+			width: 2px;
+			height: 2px;
+			background: transparent;
+			pointer-events: none;
+		}
+
+		#loading-screen-stars2 {
+			width: 1px;
+			height: 1px;
+			background: transparent;
+			pointer-events: none;
+		}
+
+		@keyframes load {
+			0% {
+				margin-left: 0;
+				margin-right: 100%;
+			}
+
+			50% {
+				margin-left: 25%;
+				margin-right: 0%;
+			}
+
+			100% {
+				margin-left: 100%;
+				margin-right: 0;
+			}
+		}
+
+		@keyframes fadeInDelayed {
+			0% {
+				opacity: 0;
+			}
+
+			75% {
+				opacity: 0;
+			}
+
+			100% {
+				opacity: 1;
+			}
+		}
+
+		@media only screen and (max-width: 960px) {
+			#loading-screen-logo {
+				width: 90px;
+				height: 90px;
+			}
+
+			#loading-screen-text {
+				font-size: 18px;
+			}
+		}
+
+		@media only screen and (max-width: 660px) {
+			#loading-screen-logo {
+				width: 80px;
+				height: 80px;
+			}
+		}
+
+		@media only screen and (max-height: 550px) {
+			#loading-screen-logo {
+				width: 70px;
+				height: 70px;
+			}
+		}
+	</style>
+</head>
+
+<body class="asteroids">
+
+	<div id="pioneer"></div>
+	<div id="ui" class="ui">
+		<div id="static-ui" class="ui grid-layout simple-grid">
+			<TutorialOverlay></TutorialOverlay>
+			<LoadIcon></LoadIcon>
+			<Overlay></Overlay>
+		</div>
+		<div id="dynamic-ui" class="ui grid-layout simple-grid"></div>
+		<div id="loading-screen">
+			<div id="loading-screen-wrapper">
+				<div id="loading-screen-stars1"></div>
+				<div id="loading-screen-stars2"></div>
+				<div id="loading-screen-logo"></div>
+				<div id="loading-screen-container">
+					<div id="loading-screen-text">Loading</div>
+					<div id="loading-screen-bar"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script id="_fed_an_ua_tag" type="text/javascript"
+		src="../../../dap.digitalgov.gov/Universal-Federated-Analytics-Mine232.js?agency=NASA&amp;pga4=G-THVT6S3D3X&amp;subagency=Eyes-on-Asteroids&amp;dclink=true&amp;sp=search,s,q&amp;sdor=false&amp;exts=tif,tiff,webp" async="" defer=""></script>
+</body>
+<footer>
+	<script>
+		// Create random stars for the loading screen
+		// NOTE: window.innerWidth may cause problems if we're embedding (there are also other window.<size> uses (eg. time slider and splash screen) that we should test for embeds)
+		let starsBoxShadow1 = '';
+		for (let i = 0; i < 8; i++) {
+			starsBoxShadow1 += `${parseInt(Math.random() * window.innerWidth)}px ${parseInt(Math.random() * window.innerHeight)}px hsl(0deg, 0%, ${parseInt(Math.random() * 80) + 20}%), `;
+		}
+		document.getElementById('loading-screen-stars1').style.boxShadow = starsBoxShadow1.slice(0, -2);
+
+		let starsBoxShadow2 = '';
+		for (let i = 0; i < 24; i++) {
+			starsBoxShadow2 += `${parseInt(Math.random() * window.innerWidth)}px ${parseInt(Math.random() * window.innerHeight)}px hsl(0deg, 0%, ${parseInt(Math.random() * 80) + 20}%), `;
+		}
+		document.getElementById('loading-screen-stars1').style.boxShadow = starsBoxShadow2.slice(0, -2);
+	</script>
+	<link rel="stylesheet" type="text/css" href="vendors.css" />
+	<link rel="stylesheet" type="text/css" href="app.css" />
+	<script src="vendors.js"></script>
+	<script src="config.js"></script>
+	<script src="app.js"></script>
+</footer>
+
+
+<!-- Mirrored from eyes.nasa.gov/apps/asteroids/ by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 05 Oct 2024 09:52:08 GMT -->
+</html>
