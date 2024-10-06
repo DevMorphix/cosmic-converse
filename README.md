@@ -76,3 +76,6 @@ The integration of AI was pivotal in making the conversation feature dynamic, re
 
 ## References
 [Click Here](https://eyes.nasa.gov/apps/asteroids/#/home)
+
+## More Details
+[Click Here](https://www.spaceappschallenge.org/nasa-space-apps-2024/find-a-team/prime-squad/)
