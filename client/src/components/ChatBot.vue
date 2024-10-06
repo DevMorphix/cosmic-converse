@@ -1,65 +1,47 @@
 <template>
-    <div v-if="isOpen" class="chatbot-container">
-      <div class="chatbot">
-        <div class="chatbot-header">
-          <h3>Chat with {{ planetInfo.name }}</h3>
-          <button @click="close" class="close-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
-        </div>
-        <div class="chatbot-messages" ref="messageContainer">
-          <div v-for="(message, index) in messages" :key="index" :class="['message', message.sender]">
-            
-            <template v-if="Array.isArray(message?.text)">
-              <div class="message-content">
-                <div v-for="(text, index) in message.text" :key="index">
-                  <p>{{ text }}</p>
-                </div>
-              </div>
-            </template>
-            <template v-else>
-                <div class="message-content">{{ message.text }}</div>
-            </template>
-            
-            <div class="message-time">{{ message.time }}</div>
-          </div>
-        </div>
-        <div class="chatbot-input">
-          <input class="text"
-            v-model="userInput" 
-            @keyup.enter="sendMessage" 
-            placeholder="Type your message..." 
-          />
-          <button @click="sendMessage" class="send-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-          </button>
-        </div>
-      </div>
-      <div class="chatbot-input">
-        <input
-          v-model="userInput"
-          @keyup.enter="sendMessage"
-          placeholder="Type your message..."
-        />
-        <button @click="sendMessage" class="send-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="22" y1="2" x2="11" y2="13"></line>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+  <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div class="bg-white dark:bg-gray-800 w-full max-w-md h-[32rem] rounded-xl shadow-2xl flex flex-col overflow-hidden">
+      <div class="bg-blue-600 dark:bg-blue-800 text-white p-4 flex justify-between items-center">
+        <h3 class="text-xl font-semibold">Chat with {{ planetInfo.name }}</h3>
+        <button @click="close" class="text-white hover:text-gray-200 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
+      
+      <div class="flex-grow overflow-y-auto p-4 space-y-4" ref="messageContainer">
+        <div v-for="(message, index) in messages" :key="index" 
+             :class="['flex flex-col', message.sender === 'user' ? 'items-end' : 'items-start']">
+          <div :class="['max-w-[80%] rounded-lg p-3 mb-1', 
+                        message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white']">
+            <template v-if="Array.isArray(message?.text)">
+              <p v-for="(text, textIndex) in message.text" :key="textIndex" class="mb-1 last:mb-0">
+                {{ text }}
+              </p>
+            </template>
+            <template v-else>
+              <p>{{ message.text }}</p>
+            </template>
+          </div>
+          <span class="text-xs text-gray-500 dark:text-gray-400">{{ message.time }}</span>
+        </div>
+      </div>
+      
+      <div class="p-4 bg-gray-100 dark:bg-gray-900">
+        <div class="flex items-center bg-white dark:bg-gray-800 rounded-full shadow-md">
+          <input v-model="userInput" @keyup.enter="sendMessage" 
+                 class="flex-grow px-4 py-2 bg-transparent focus:outline-none dark:text-white"
+                 placeholder="Type your message..." />
+          <button @click="sendMessage" class="p-2 text-blue-500 hover:text-blue-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
-
+  </div>
 </template>
 
 <script>
@@ -149,7 +131,6 @@ export default {
           }),
         });
       }
-
     },
     initializeChat() {
       const currentTime = new Date().toLocaleTimeString([], {
@@ -158,7 +139,7 @@ export default {
       });
       this.messages = [
         {
-          text: `Hello! I'm ${this.planetInfo.name}. What would you like to know about me?`,
+          text: `Hello! I'm me your ${this.planetInfo.name}. I can help you know more about me. Ask me anything!`,
           sender: "bot",
           time: currentTime,
         },
@@ -169,129 +150,13 @@ export default {
       container.scrollTop = container.scrollHeight;
     },
     getPreviousContent() {
-      return (
-        this.messages.map((message) => ({
-          text: message.text,
-          sender: message.sender,
-        }))
-      );
+      return this.messages.length > 1
+        ? this.messages.map((message) => ({
+            text: message.text,
+            sender: message.sender,
+          }))
+        : "No previous content";
     },
   },
 };
 </script>
-
-  <style scoped>
-  .chatbot-container {
-    position: fixed;
-    top: 0px;  
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-  }
-  
-  .chatbot {
-    width: 100VH;
-    height: 100%;
-    background-color: var(--primary);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  .chatbot-header {
-    background-color: var(--secondary);
-    color: white;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .close-button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .chatbot-messages {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .message {
-    margin-bottom: 15px;
-    max-width: 80%;
-  }
-  
-  .message-content {
-    padding: 10px;
-    border-radius: 18px;
-    display: inline-block;
-  }
-  
-  .message-time {
-    font-size: 0.8em;
-    color: #888;
-    margin-top: 5px;
-  }
-  
-  .user {
-    align-self: flex-end;
-  }
-  
-  .user .message-content {
-    background-color: var(--tertiary);
-    color: white;
-  }
-  
-  .bot .message-content {
-    background-color: #f0f0f0;
-    color: black;
-  }
-  .text{
-    color: black;
-  }
-  
-  .chatbot-input {
-    display: flex;
-    padding: 15px;
-    background-color: white;
-  }
-  
-  .chatbot-input input {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    margin-right: 10px;
-  }
-  
-  .send-button {
-    background-color: var(--secondary);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-  }
-  
-  .send-button:hover {
-    background-color: var(--tertiary);
-  }
-  </style>
->>>>>>> 5d89e05ec97499630d362b022e83ef36c8fa9a4a
