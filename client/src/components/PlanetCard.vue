@@ -1,4 +1,7 @@
 <template>
+    <div class="container">
+
+    
     <div class="planet-card">
         <img class="planet-img" :src="`./assets/cards/${planetInfo.name}.png`" :alt="planetInfo.displayName">
         <div class="title">
@@ -41,11 +44,13 @@
                 <li v-if="planetInfo.moons != null">Moons: <span class="value">{{ planetInfo.moons }}</span></li>
             </ul>
             <div>
-                <button @click="openChat" class="but">chat with me</button>
+                <button @click="openChat" class="but place-content-center">chat with me</button>
             </div>
         </div>
         <ChatBot :planetInfo="planetInfo"  :isOpen="isChatOpen" @close="closeChat" />
     </div>
+
+</div>
 </template>
 
 <script>
@@ -95,12 +100,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.container{
+    display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
 .planet-card {
     position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 280px;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
     border-radius: var(--radius);
     box-shadow: -8px -9px 14px rgb(255 255 255 / 8%);
     overflow: hidden;
@@ -115,7 +124,7 @@ export default {
         background-color: var(--secondary);
     }
     .info {
-        margin-top: 150px;
+        margin-top: 200px;
         min-height: 250px;
         width: 100%;
         border-radius: var(--radius);
@@ -185,17 +194,23 @@ export default {
 }
 
 .but {
-    background-color: var(--secondary);
+    background: linear-gradient(90deg, var(--dark) 0%, var(--primary) 100%);
     color: white;
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
     margin-top: 10px;
+    /* Center the button */
+    display: block;  /* Makes the button a block element */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .but:hover {
-    background-color: var(--tertiary);
+    background: linear-gradient(90deg, var(--primary) 0%, var(--dark) 100%);
 }
 
 @media (max-width: 560px) {
@@ -234,6 +249,7 @@ export default {
         .info {
             top: 0;
             right: 0;
+            padding-bottom: 30px;
             width: auto;
             height: 100%;
             left: 230px;

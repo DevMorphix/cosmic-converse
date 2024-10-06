@@ -11,9 +11,11 @@
           <div v-for="(message, index) in messages" :key="index" :class="['message', message.sender]">
             
             <template v-if="Array.isArray(message?.text)">
+              <div class="message-content">
                 <div v-for="(text, index) in message.text" :key="index">
-                    <div class="message-content">{{ text }}</div>
+                  <p>{{ text }}</p>
                 </div>
+              </div>
             </template>
             <template v-else>
                 <div class="message-content">{{ message.text }}</div>
@@ -23,7 +25,7 @@
           </div>
         </div>
         <div class="chatbot-input">
-          <input 
+          <input class="text"
             v-model="userInput" 
             @keyup.enter="sendMessage" 
             placeholder="Type your message..." 
@@ -124,7 +126,7 @@
   <style scoped>
   .chatbot-container {
     position: fixed;
-    top: 10px;
+    top: 0px;  
     left: 0;
     width: 100%;
     height: 100%;
@@ -136,8 +138,8 @@
   }
   
   .chatbot {
-    width: 350px;
-    height: 420px;
+    width: 100VH;
+    height: 100%;
     background-color: var(--primary);
     border-radius: 10px;
     display: flex;
@@ -198,6 +200,9 @@
   
   .bot .message-content {
     background-color: #f0f0f0;
+    color: black;
+  }
+  .text{
     color: black;
   }
   
