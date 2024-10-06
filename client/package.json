@@ -8,8 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "postprocessing": "^6.28.1",
-    "three": "^0.142.0",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "postprocessing": "^6.36.3",
+    "three": "^0.157.0",
     "vue": "^3.2.25"
   },
   "devDependencies": {
