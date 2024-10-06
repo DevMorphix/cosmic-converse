@@ -16,8 +16,8 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 // }
 // module.exports = run;
 
-async function run(message) {
-  const prompt = `Talk to me as Mars: ${message}`;
+async function run(message, planetInfo, previousContent) {
+  const prompt = `Talk to me as ${planetInfo.name}: ${message} - ${previousContent}`;
 
   // Generate content based on the prompt
   const result = await model.generateContent(prompt);

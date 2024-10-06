@@ -14,11 +14,15 @@ app.get("/", (req, res) => {
 
 app.post("/generate", async (req, res) => {
   try {
-    const content = req.body.gemini_content;
+
+    let content = req.body.gemini_content;
+    let planetInfo = req.body.planet_info;
+    let previousContent = req.body.previous_content;
+    
     if (!content) {
       return res.status(400).json({ error: "gemini_content is required" });
     }
-    const gemini = await run(content);
+    const gemini = await run(content, planetInfo, previousContent);
     return res.json({
       message: "Gemini Reponse Retrived Successfully",
       data: gemini,
