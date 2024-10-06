@@ -8,7 +8,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 async function run(message, planetInfo, previousContent) {
-  const prompt = `Talk to me as ${planetInfo.name}: ${message} - ${previousContent}`;
+  const prompt = `Talk to me as ${planetInfo.name}: ${message} - Use the chat memory to remember our previous conversation: ${previousContent}`;
 
   // Generate content based on the prompt
   const result = await model.generateContent(prompt);
