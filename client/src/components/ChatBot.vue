@@ -169,12 +169,11 @@ export default {
       container.scrollTop = container.scrollHeight;
     },
     getPreviousContent() {
-      return (
-        this.messages.map((message) => ({
-          text: message.text,
-          sender: message.sender,
-        }))
-      );
+      return this.messages.length > 1 ? this.messages.map((message) => ({
+        text: message.text,
+        sender: message.sender,
+      })) : "No previous content";
+
     },
   },
 };

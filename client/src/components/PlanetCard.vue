@@ -1,271 +1,99 @@
 <template>
-    <div class="container">
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="relative">
+                <img :src="`./assets/cards/${planetInfo.name}.png`" :alt="planetInfo.displayName"
+                    class="w-full h-64 object-cover rounded-t-lg">
+                <button @click="$emit('closeCard')" class="absolute top-2 right-2 text-white hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
 
-    
-    <div class="planet-card">
-        <img class="planet-img" :src="`./assets/cards/${planetInfo.name}.png`" :alt="planetInfo.displayName">
-        <div class="title">
-            <h2>{{ planetInfo.displayName }}</h2>
-        </div>
-        <button class="close" @click="this.$emit('closeCard')">×</button>
-        <div class="temperature">
-            <p v-if="planetInfo.meanTemp" title="Surface temperature">mean: 
-                <span class="value" :style="{ color: temperatureColor(planetInfo.meanTemp) }"> 
-                    <svg xmlns="http://www.w3.org/2000/svg" :stroke="temperatureColor(planetInfo.meanTemp)" class="icon icon-tabler icon-tabler-temperature" width="22" height="22" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5" /><line x1="10" y1="9" x2="14" y2="9" /></svg>
-                    {{ planetInfo.meanTemp }} °C
-                </span>
-            </p>
-            <p v-if="planetInfo.minTemp" title="Surface temperature">min: 
-                <span class="value" :style="{ color: temperatureColor(planetInfo.minTemp)}">
-                    <svg xmlns="http://www.w3.org/2000/svg" :stroke="temperatureColor(planetInfo.minTemp)" class="icon icon-tabler icon-tabler-temperature" width="22" height="22" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5" /><line x1="10" y1="9" x2="14" y2="9" /></svg>
-                    {{ planetInfo.minTemp }} °C
-                </span>
-            </p>
-            <p v-if="planetInfo.maxTemp" title="Surface temperature">max: 
-                <span class="value" :style="{ color: temperatureColor(planetInfo.maxTemp)}">
-                    <svg xmlns="http://www.w3.org/2000/svg" :stroke="temperatureColor(planetInfo.maxTemp)" class="icon icon-tabler icon-tabler-temperature" width="22" height="22" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5" /><line x1="10" y1="9" x2="14" y2="9" /></svg>
-                    {{ planetInfo.maxTemp }} °C
-                </span>
-            </p>
-        </div>
-        <div class="info">
-            <h5>{{ planetInfo.caption }}</h5>
-            <p class="description">{{ planetInfo.description }}</p>
-            <ul>
-                <li>Radius: <span class="value">{{ planetInfo.radius }} km</span></li>
-                <li v-if="planetInfo.timesLarger && planetInfo.timesLarger !== -1">
-                    <span v-if="planetInfo.timesLarger >= 1"><span class="value">{{ planetInfo.timesLarger }}x</span> larger than Earth</span>
-                    <span v-else><span class="value">{{ (1 / planetInfo.timesLarger).toFixed(2) }}x</span> smaller than Earth</span>
-                </li>
-                <li v-if="planetInfo.distanceFromSun && planetInfo.distanceFromSun !== -1">Distance from Sun: <span class="value">{{ planetInfo.distanceFromSun }} AU</span></li>
-                <li v-if="planetInfo.distance">Distance from {{ planetInfo.orbitObject.charAt(0).toUpperCase() + planetInfo.orbitObject.slice(1) }}: <span class="value">{{ planetInfo.distance }} km</span></li>
-                <li v-if="planetInfo.year">1 year: <span class="value">{{ planetInfo.year }}</span></li>
-                <li v-if="planetInfo.day">1 day: <span class="value">{{ planetInfo.day }}</span></li>
-                <li v-if="planetInfo.moons != null">Moons: <span class="value">{{ planetInfo.moons }}</span></li>
-            </ul>
-            <div>
-                <button @click="openChat" class="but place-content-center">chat with me</button>
+            <div class="p-6 text-gray-800">
+                <h2 class="text-3xl font-bold text-center mb-4">{{ planetInfo.displayName }}</h2>
+
+                <div class="space-y-2 mb-4">
+                    <p v-if="planetInfo.meanTemp" class="flex items-center justify-between">
+                        <span class="font-semibold">Mean Temperature:</span>
+                        <span :class="['flex items-center', temperatureColor(planetInfo.meanTemp)]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 2a1 1 0 00-1 1v7.586l-2.293-2.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L11 10.586V3a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            {{ planetInfo.meanTemp }} °C
+                        </span>
+                    </p>
+                    <p v-if="planetInfo.radius" class="flex justify-between">
+                        <span class="font-semibold">Radius:</span>
+                        <span>{{ planetInfo.radius }} km</span>
+                    </p>
+                    <p v-if="planetInfo.distanceFromSun" class="flex justify-between">
+                        <span class="font-semibold">Distance from Sun:</span>
+                        <span>{{ planetInfo.distanceFromSun }} AU</span>
+                    </p>
+                    <p v-if="planetInfo.year" class="flex justify-between">
+                        <span class="font-semibold">Year Length:</span>
+                        <span>{{ planetInfo.year }}</span>
+                    </p>
+                    <p v-if="planetInfo.day" class="flex justify-between">
+                        <span class="font-semibold">Day Length:</span>
+                        <span>{{ planetInfo.day }}</span>
+                    </p>
+                    <p v-if="planetInfo.moons != null" class="flex justify-between">
+                        <span class="font-semibold">Moons:</span>
+                        <span>{{ planetInfo.moons }}</span>
+                    </p>
+                </div>
+
+                <p class="text-gray-700 mb-4">{{ planetInfo.description }}</p>
+
+                <button @click="openChat"
+                    class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300">
+                    Chat with me
+                </button>
             </div>
         </div>
-        <ChatBot :planetInfo="planetInfo"  :isOpen="isChatOpen" @close="closeChat" />
     </div>
 
-</div>
+    <ChatBot :planetInfo="planetInfo"  :isOpen="isChatOpen" @close="closeChat" />
 </template>
 
 <script>
-import ChatBot from './ChatBot.vue';
-
-export default {
-    components: {
-        ChatBot
-    },
-    props: {
-        planetInfo: Object,
-    },
-    data() {
-        return {
-            temperatureColors: {
-                "-130": "#a8f1ff",
-                "-90": "#1fb6d0",
-                "-40": "#c4f987",
-                10: "#c4f987",
-                50: "#ffcc33",
-                90: "#ee6600",
-                150: "#990000",
+    import ChatBot from './ChatBot.vue';
+    export default {
+        name: 'PlanetCard',
+        components: {
+            ChatBot
+        },
+        props: {
+            planetInfo: Object,
+        },
+        data() {
+            return {
+                isChatOpen: false,
+            };
+        },
+        emits: ['closeCard'],
+        methods: {
+            temperatureColor(temp) {
+                if (temp < -50) return 'text-blue-500';
+                if (temp < 0) return 'text-cyan-500';
+                if (temp < 50) return 'text-green-500';
+                if (temp < 100) return 'text-yellow-500';
+                return 'text-red-500';
             },
-            isChatOpen: false
-        }
-    },
-    emits: ["closeCard"],
-    methods: {
-        openChat() {
-            this.isChatOpen = true;
-        },
-        closeChat() {
-            this.isChatOpen = false;
-        },
-        temperatureColor(temp) {
-            const keys = Object.keys(this.temperatureColors).map(t => parseInt(t));
-            keys.sort((a, b) => (+a) - (+b));
-            for(let key of keys) {
-                if(key > temp) {
-                    return this.temperatureColors[key];
-                }
-            }
-            return this.temperatureColors[keys[keys.length - 1]];
+            openChat() {
+                this.isChatOpen = true;
+            },
+            closeChat() {
+                this.isChatOpen = false;
+            },
         }
     }
-}
 </script>
-
-<style scoped lang="scss">
-.container{
-    display: grid;
-  place-items: center;
-  min-height: 100vh;
-}
-.planet-card {
-    position: absolute;
-  top: 25%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-    border-radius: var(--radius);
-    box-shadow: -8px -9px 14px rgb(255 255 255 / 8%);
-    overflow: hidden;
-    font-size: 14px;
-    .planet-img{
-        width: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: -1;
-        background-color: var(--secondary);
-    }
-    .info {
-        margin-top: 200px;
-        min-height: 250px;
-        width: 100%;
-        border-radius: var(--radius);
-        background: linear-gradient(131.76deg, var(--primary) -34.78%, var(--dark) 93.37%);
-        padding: 6px 12px;
-        h5 {
-            text-align: center;
-            font-size: 18px;
-            color: var(--tertiary);
-            font-weight: 100;
-        }
-        ul {
-            margin: 10px 0;
-            text-align: left;
-            list-style: none;
-            padding-left: 0;
-            li {
-                margin: 4px 0;
-                color: #d5d5d5;
-                .value {
-                    font-weight: bold;
-                    color: #fff;
-                }
-            }
-        }
-    }
-    .title{
-        position: absolute;
-        text-align: center;
-        top: 2px;
-        width: 100%;
-        h2 {
-            text-transform: uppercase;
-            font-weight: 400;
-            font-size: 20px;
-        }
-    }
-    .temperature {
-        position: absolute;
-        top: 50px;
-        right: 10px;
-        font-weight: 600;
-        text-shadow: -4px 1px 11px #000;
-        font-size: 14px;
-        font-weight: lighter;
-        .value {
-            font-weight: bold;
-            text-shadow: 0 0 10px #fff;
-        }
-        .icon {
-            vertical-align: middle;
-        }
-    }
-    .close {
-        position: absolute;
-        top: 2px;
-        right: 6px;
-        background-color: transparent;
-        border: 0;
-        color: #fff;
-        font-size: 24px;
-        cursor: pointer;
-    }
-    .description {
-        margin: 6px 0;
-    }
-}
-
-.but {
-    background: linear-gradient(90deg, var(--dark) 0%, var(--primary) 100%);
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 20px;
-    font-family: 'Times New Roman', Times, serif;
-    margin-top: 10px;
-    /* Center the button */
-    display: block;  /* Makes the button a block element */
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.but:hover {
-    background: linear-gradient(90deg, var(--primary) 0%, var(--dark) 100%);
-}
-
-@media (max-width: 560px) {
-    .planet-card {
-        width: auto;
-        height: auto;
-        transform: none;
-        top: 125px;
-        left: 10px;
-        right: 10px;
-        bottom: 20px;
-        z-index: 4;
-        .info {
-            top: 250px;
-        }
-        .close {
-            font-size: 32px;
-        }
-    }
-}
-
-@media (max-height: 360px) {
-    .planet-card {
-        width: auto;
-        height: auto;
-        transform: none;
-        top: 15px;
-        left: 10px;
-        right: 10px;
-        bottom: 10px;
-        z-index: 4;
-        .planet-img {
-            height: 100%;
-            width: auto;
-        }
-        .info {
-            top: 0;
-            right: 0;
-            padding-bottom: 30px;
-            width: auto;
-            height: 100%;
-            left: 230px;
-        }
-        .title {
-            max-width: 250px;
-        }
-        .temperature {
-            left: 110px;
-            right: auto;
-        }
-        .close {
-            right: auto;
-            left: 6px;
-            font-size: 32px;
-        }
-    }
-}
-</style>
