@@ -40,12 +40,21 @@
                 <li v-if="planetInfo.day">1 day: <span class="value">{{ planetInfo.day }}</span></li>
                 <li v-if="planetInfo.moons != null">Moons: <span class="value">{{ planetInfo.moons }}</span></li>
             </ul>
+            <div>
+                <button @click="openChat" class="but">chat with me</button>
+            </div>
         </div>
+        <ChatBot :planetInfo="planetInfo"  :isOpen="isChatOpen" @close="closeChat" />
     </div>
 </template>
 
 <script>
+import ChatBot from './ChatBot.vue';
+
 export default {
+    components: {
+        ChatBot
+    },
     props: {
         planetInfo: Object,
     },
@@ -59,11 +68,18 @@ export default {
                 50: "#ffcc33",
                 90: "#ee6600",
                 150: "#990000",
-            }
+            },
+            isChatOpen: false
         }
     },
     emits: ["closeCard"],
     methods: {
+        openChat() {
+            this.isChatOpen = true;
+        },
+        closeChat() {
+            this.isChatOpen = false;
+        },
         temperatureColor(temp) {
             const keys = Object.keys(this.temperatureColors).map(t => parseInt(t));
             keys.sort((a, b) => (+a) - (+b));
@@ -79,145 +95,161 @@ export default {
 </script>
 
 <style scoped lang="scss">
-    .planet-card {
+.planet-card {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 280px;
+    border-radius: var(--radius);
+    box-shadow: -8px -9px 14px rgb(255 255 255 / 8%);
+    overflow: hidden;
+    font-size: 14px;
+    .planet-img{
+        width: 100%;
         position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 280px;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: -1;
+        background-color: var(--secondary);
+    }
+    .info {
+        margin-top: 150px;
+        min-height: 250px;
+        width: 100%;
         border-radius: var(--radius);
-        box-shadow: -8px -9px 14px rgb(255 255 255 / 8%);
-        overflow: hidden;
-        font-size: 14px;
-        .planet-img{
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: -1;
-            background-color: var(--secondary);
+        background: linear-gradient(131.76deg, var(--primary) -34.78%, var(--dark) 93.37%);
+        padding: 6px 12px;
+        h5 {
+            text-align: center;
+            font-size: 18px;
+            color: var(--tertiary);
+            font-weight: 100;
         }
-        .info {
-            margin-top: 150px;
-            min-height: 250px;
-            width: 100%;
-            border-radius: var(--radius);
-            background: linear-gradient(131.76deg, var(--primary) -34.78%, var(--dark) 93.37%);
-            padding: 6px 12px;
-            h5 {
-                text-align: center;
-                font-size: 18px;
-                color: var(--tertiary);
-                font-weight: 100;
-            }
-            ul {
-                margin: 10px 0;
-                text-align: left;
-                list-style: none;
-                padding-left: 0;
-                li {
-                    margin: 4px 0;
-                    color: #d5d5d5;
-                    .value {
-                        font-weight: bold;
-                        color: #fff;
-                    }
+        ul {
+            margin: 10px 0;
+            text-align: left;
+            list-style: none;
+            padding-left: 0;
+            li {
+                margin: 4px 0;
+                color: #d5d5d5;
+                .value {
+                    font-weight: bold;
+                    color: #fff;
                 }
             }
         }
-        .title{
-            position: absolute;
-            text-align: center;
-            top: 2px;
-            width: 100%;
-            h2 {
-                text-transform: uppercase;
-                font-weight: 400;
-                font-size: 20px;
-            }
+    }
+    .title{
+        position: absolute;
+        text-align: center;
+        top: 2px;
+        width: 100%;
+        h2 {
+            text-transform: uppercase;
+            font-weight: 400;
+            font-size: 20px;
         }
-        .temperature {
-            position: absolute;
-            top: 50px;
-            right: 10px;
-            font-weight: 600;
-            text-shadow: -4px 1px 11px #000;
-            font-size: 14px;
-            font-weight: lighter;
-            .value {
-                font-weight: bold;
-                text-shadow: 0 0 10px #fff;
-            }
-            .icon {
-                vertical-align: middle;
-            }
+    }
+    .temperature {
+        position: absolute;
+        top: 50px;
+        right: 10px;
+        font-weight: 600;
+        text-shadow: -4px 1px 11px #000;
+        font-size: 14px;
+        font-weight: lighter;
+        .value {
+            font-weight: bold;
+            text-shadow: 0 0 10px #fff;
+        }
+        .icon {
+            vertical-align: middle;
+        }
+    }
+    .close {
+        position: absolute;
+        top: 2px;
+        right: 6px;
+        background-color: transparent;
+        border: 0;
+        color: #fff;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    .description {
+        margin: 6px 0;
+    }
+}
+
+.but {
+    background-color: var(--secondary);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.but:hover {
+    background-color: var(--tertiary);
+}
+
+@media (max-width: 560px) {
+    .planet-card {
+        width: auto;
+        height: auto;
+        transform: none;
+        top: 125px;
+        left: 10px;
+        right: 10px;
+        bottom: 20px;
+        z-index: 4;
+        .info {
+            top: 250px;
         }
         .close {
-            position: absolute;
-            top: 2px;
-            right: 6px;
-            background-color: transparent;
-            border: 0;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        .description {
-            margin: 6px 0;
+            font-size: 32px;
         }
     }
-    @media (max-width: 560px) {
-        .planet-card {
+}
+
+@media (max-height: 360px) {
+    .planet-card {
+        width: auto;
+        height: auto;
+        transform: none;
+        top: 15px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        z-index: 4;
+        .planet-img {
+            height: 100%;
             width: auto;
-            height: auto;
-            transform: none;
-            top: 125px;
-            left: 10px;
-            right: 10px;
-            bottom: 20px;
-            z-index: 4;
-            .info {
-                top: 250px;
-            }
-            .close {
-                font-size: 32px;
-            }
         }
-    }
-    @media (max-height: 360px) {
-        .planet-card {
+        .info {
+            top: 0;
+            right: 0;
             width: auto;
-            height: auto;
-            transform: none;
-            top: 15px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            z-index: 4;
-            .planet-img {
-                height: 100%;
-                width: auto;
-            }
-            .info {
-                top: 0;
-                right: 0;
-                width: auto;
-                height: 100%;
-                left: 230px;
-            }
-            .title {
-                max-width: 250px;
-            }
-            .temperature {
-                left: 110px;
-                right: auto;
-            }
-            .close {
-                right: auto;
-                left: 6px;
-                font-size: 32px;
-            }
+            height: 100%;
+            left: 230px;
+        }
+        .title {
+            max-width: 250px;
+        }
+        .temperature {
+            left: 110px;
+            right: auto;
+        }
+        .close {
+            right: auto;
+            left: 6px;
+            font-size: 32px;
         }
     }
+}
 </style>
